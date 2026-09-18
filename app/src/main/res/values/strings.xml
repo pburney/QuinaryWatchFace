@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Quinary</string>
+    <string name="cfg_theme">Light theme</string>
+    <string name="cfg_labels">Row labels</string>
+    <string name="slot_heart">Heart rate</string>
+    <string name="slot_weather">Weather</string>
+    <string name="slot_date">Date</string>
+    <string name="slot_extra">Extra</string>
+</resources>

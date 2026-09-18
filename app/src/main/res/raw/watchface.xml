@@ -10,85 +10,6 @@
   </UserConfigurations>
 
   <Scene>
-    <!-- complications: independent of theme, and must be a direct child of
-         Scene (can't nest inside the theme Group/BooleanConfiguration
-         below), so each picks its own tint via an inner theme check. -->
-    <ComplicationSlot x="125" y="382" width="200" height="36" slotId="3" displayName="slot_date" supportedTypes="SHORT_TEXT EMPTY">
-      <DefaultProviderPolicy defaultSystemProvider="DAY_AND_DATE" defaultSystemProviderType="SHORT_TEXT"/>
-      <BoundingRoundBox x="0" y="0" width="200" height="36" cornerRadius="8"/>
-      <Complication type="SHORT_TEXT">
-        <Condition>
-          <Expressions>
-            <Expression name="date_on"><![CDATA[[COMPLICATION.TEXT] != null]]></Expression>
-          </Expressions>
-          <Compare expression="date_on">
-            <PartText x="0" y="0" width="200" height="36">
-              <Text align="CENTER">
-                <Font family="SYNC_TO_DEVICE" size="30" weight="NORMAL" color="#FF808080">
-                  <Template>%s<Parameter expression="[COMPLICATION.TEXT]"/></Template>
-                </Font>
-              </Text>
-            </PartText>
-          </Compare>
-        </Condition>
-      </Complication>
-    </ComplicationSlot>
-    <ComplicationSlot x="98" y="48" width="120" height="68" slotId="1" displayName="slot_heart" supportedTypes="SHORT_TEXT EMPTY">
-      <DefaultProviderPolicy defaultSystemProvider="HEART_RATE" defaultSystemProviderType="SHORT_TEXT"/>
-      <BoundingRoundBox x="0" y="0" width="120" height="68" cornerRadius="12"/>
-      <Complication type="SHORT_TEXT">
-        <Condition>
-          <Expressions>
-            <Expression name="heart_on"><![CDATA[[COMPLICATION.TEXT] != null]]></Expression>
-          </Expressions>
-          <Compare expression="heart_on">
-            <PartImage x="0" y="16" width="36" height="36" tintColor="#FF808080">
-              <Image resource="heart_icon"/>
-            </PartImage>
-            <PartText x="36" y="0" width="84" height="68">
-              <Text align="CENTER" ellipsis="TRUE">
-                <Font family="SYNC_TO_DEVICE" size="30" weight="NORMAL" color="#FF808080">
-                  <Template>%s<Parameter expression="[COMPLICATION.TEXT]"/></Template>
-                </Font>
-              </Text>
-            </PartText>
-          </Compare>
-        </Condition>
-      </Complication>
-    </ComplicationSlot>
-    <ComplicationSlot x="232" y="48" width="120" height="68" slotId="2" displayName="slot_weather" supportedTypes="SHORT_TEXT EMPTY">
-      <BoundingRoundBox x="0" y="0" width="120" height="68" cornerRadius="12"/>
-      <Complication type="SHORT_TEXT">
-        <Condition>
-          <Expressions>
-            <Expression name="weather_icon_text"><![CDATA[[COMPLICATION.TEXT] != null && [COMPLICATION.MONOCHROMATIC_IMAGE] != null]]></Expression>
-            <Expression name="weather_text"><![CDATA[[COMPLICATION.TEXT] != null && [COMPLICATION.MONOCHROMATIC_IMAGE] == null]]></Expression>
-          </Expressions>
-          <Compare expression="weather_icon_text">
-            <PartText x="0" y="0" width="84" height="68">
-              <Text align="CENTER" ellipsis="TRUE">
-                <Font family="SYNC_TO_DEVICE" size="30" weight="NORMAL" color="#FF808080">
-                  <Template>%s<Parameter expression="[COMPLICATION.TEXT]"/></Template>
-                </Font>
-              </Text>
-            </PartText>
-            <PartImage x="84" y="16" width="36" height="36" tintColor="#FF808080">
-              <Image resource="[COMPLICATION.MONOCHROMATIC_IMAGE]"/>
-            </PartImage>
-          </Compare>
-          <Compare expression="weather_text">
-            <PartText x="0" y="0" width="120" height="68">
-              <Text align="CENTER" ellipsis="TRUE">
-                <Font family="SYNC_TO_DEVICE" size="30" weight="NORMAL" color="#FF808080">
-                  <Template>%s<Parameter expression="[COMPLICATION.TEXT]"/></Template>
-                </Font>
-              </Text>
-            </PartText>
-          </Compare>
-        </Condition>
-      </Complication>
-    </ComplicationSlot>
-
     <!-- theme (dark/light) is a UserConfiguration selection, not a per-frame
          value, so it's a BooleanConfiguration/BooleanOption structural
          switch, same reasoning as BinaryWatchFace's BCD/binary toggle. -->
@@ -482,6 +403,27 @@
         <PartText x="55" y="318" width="36" height="36">
           <Text align="CENTER">
             <Font family="SYNC_TO_DEVICE" size="26" weight="NORMAL" color="#FF808080">S</Font>
+          </Text>
+        </PartText>
+        <PartText x="359" y="144" width="44" height="36">
+          <Text align="CENTER">
+            <Font family="SYNC_TO_DEVICE" size="26" weight="NORMAL" color="#FF808080">
+              <Template>%02d<Parameter expression="[HOUR_0_23]"/></Template>
+            </Font>
+          </Text>
+        </PartText>
+        <PartText x="359" y="231" width="44" height="36">
+          <Text align="CENTER">
+            <Font family="SYNC_TO_DEVICE" size="26" weight="NORMAL" color="#FF808080">
+              <Template>%02d<Parameter expression="[MINUTE]"/></Template>
+            </Font>
+          </Text>
+        </PartText>
+        <PartText x="359" y="318" width="44" height="36">
+          <Text align="CENTER">
+            <Font family="SYNC_TO_DEVICE" size="26" weight="NORMAL" color="#FF808080">
+              <Template>%02d<Parameter expression="[SECOND]"/></Template>
+            </Font>
           </Text>
         </PartText>
           </Group>
@@ -880,11 +822,118 @@
             <Font family="SYNC_TO_DEVICE" size="26" weight="NORMAL" color="#FF808080">S</Font>
           </Text>
         </PartText>
+        <PartText x="359" y="144" width="44" height="36">
+          <Text align="CENTER">
+            <Font family="SYNC_TO_DEVICE" size="26" weight="NORMAL" color="#FF808080">
+              <Template>%02d<Parameter expression="[HOUR_0_23]"/></Template>
+            </Font>
+          </Text>
+        </PartText>
+        <PartText x="359" y="231" width="44" height="36">
+          <Text align="CENTER">
+            <Font family="SYNC_TO_DEVICE" size="26" weight="NORMAL" color="#FF808080">
+              <Template>%02d<Parameter expression="[MINUTE]"/></Template>
+            </Font>
+          </Text>
+        </PartText>
+        <PartText x="359" y="318" width="44" height="36">
+          <Text align="CENTER">
+            <Font family="SYNC_TO_DEVICE" size="26" weight="NORMAL" color="#FF808080">
+              <Template>%02d<Parameter expression="[SECOND]"/></Template>
+            </Font>
+          </Text>
+        </PartText>
           </Group>
         </BooleanOption>
       </BooleanConfiguration>
     </Group>
       </BooleanOption>
     </BooleanConfiguration>
+
+    <!-- complications: must be a direct child of Scene (can't nest inside
+         the theme Group/BooleanConfiguration above), so each picks its own
+         tint via a fixed color rather than a theme-conditional one. Drawn
+         AFTER the theme block deliberately: Scene children paint in
+         document order, and the theme block's full-canvas background
+         rectangle was previously painting over these when they came first,
+         so data computed correctly (confirmed via headless-render logcat)
+         but was never visible on screen. Real bug, found 2026-09-18 via an
+         isolation test (minimal face with bg-then-complication order
+         worked; this face with complication-then-bg order did not). -->
+    <ComplicationSlot x="125" y="382" width="200" height="36" slotId="3" displayName="slot_date" supportedTypes="SHORT_TEXT EMPTY">
+      <DefaultProviderPolicy defaultSystemProvider="DAY_AND_DATE" defaultSystemProviderType="SHORT_TEXT"/>
+      <BoundingRoundBox x="0" y="0" width="200" height="36" cornerRadius="8"/>
+      <Complication type="SHORT_TEXT">
+        <Condition>
+          <Expressions>
+            <Expression name="date_on"><![CDATA[[COMPLICATION.TEXT] != null]]></Expression>
+          </Expressions>
+          <Compare expression="date_on">
+            <PartText x="0" y="0" width="200" height="36">
+              <Text align="CENTER">
+                <Font family="SYNC_TO_DEVICE" size="30" weight="NORMAL" color="#FF808080">
+                  <Template>%s<Parameter expression="[COMPLICATION.TEXT]"/></Template>
+                </Font>
+              </Text>
+            </PartText>
+          </Compare>
+        </Condition>
+      </Complication>
+    </ComplicationSlot>
+    <ComplicationSlot x="98" y="48" width="120" height="68" slotId="1" displayName="slot_heart" supportedTypes="SHORT_TEXT EMPTY">
+      <DefaultProviderPolicy defaultSystemProvider="HEART_RATE" defaultSystemProviderType="SHORT_TEXT"/>
+      <BoundingRoundBox x="0" y="0" width="120" height="68" cornerRadius="12"/>
+      <Complication type="SHORT_TEXT">
+        <Condition>
+          <Expressions>
+            <Expression name="heart_on"><![CDATA[[COMPLICATION.TEXT] != null]]></Expression>
+          </Expressions>
+          <Compare expression="heart_on">
+            <PartImage x="0" y="16" width="36" height="36" tintColor="#FF808080">
+              <Image resource="heart_icon"/>
+            </PartImage>
+            <PartText x="36" y="0" width="84" height="68">
+              <Text align="CENTER" ellipsis="TRUE">
+                <Font family="SYNC_TO_DEVICE" size="30" weight="NORMAL" color="#FF808080">
+                  <Template>%s<Parameter expression="[COMPLICATION.TEXT]"/></Template>
+                </Font>
+              </Text>
+            </PartText>
+          </Compare>
+        </Condition>
+      </Complication>
+    </ComplicationSlot>
+    <ComplicationSlot x="232" y="48" width="120" height="68" slotId="2" displayName="slot_weather" supportedTypes="SHORT_TEXT EMPTY">
+      <BoundingRoundBox x="0" y="0" width="120" height="68" cornerRadius="12"/>
+      <Complication type="SHORT_TEXT">
+        <Condition>
+          <Expressions>
+            <Expression name="weather_icon_text"><![CDATA[[COMPLICATION.TEXT] != null && [COMPLICATION.MONOCHROMATIC_IMAGE] != null]]></Expression>
+            <Expression name="weather_text"><![CDATA[[COMPLICATION.TEXT] != null && [COMPLICATION.MONOCHROMATIC_IMAGE] == null]]></Expression>
+          </Expressions>
+          <Compare expression="weather_icon_text">
+            <PartText x="0" y="0" width="84" height="68">
+              <Text align="CENTER" ellipsis="TRUE">
+                <Font family="SYNC_TO_DEVICE" size="30" weight="NORMAL" color="#FF808080">
+                  <Template>%s<Parameter expression="[COMPLICATION.TEXT]"/></Template>
+                </Font>
+              </Text>
+            </PartText>
+            <PartImage x="84" y="16" width="36" height="36" tintColor="#FF808080">
+              <Image resource="[COMPLICATION.MONOCHROMATIC_IMAGE]"/>
+            </PartImage>
+          </Compare>
+          <Compare expression="weather_text">
+            <PartText x="0" y="0" width="120" height="68">
+              <Text align="CENTER" ellipsis="TRUE">
+                <Font family="SYNC_TO_DEVICE" size="30" weight="NORMAL" color="#FF808080">
+                  <Template>%s<Parameter expression="[COMPLICATION.TEXT]"/></Template>
+                </Font>
+              </Text>
+            </PartText>
+          </Compare>
+        </Condition>
+      </Complication>
+    </ComplicationSlot>
   </Scene>
 </WatchFace>

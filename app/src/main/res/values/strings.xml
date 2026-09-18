@@ -6,5 +6,4 @@
     <string name="slot_heart">Heart rate</string>
     <string name="slot_weather">Weather</string>
     <string name="slot_date">Date</string>
-    <string name="slot_extra">Extra</string>
 </resources>

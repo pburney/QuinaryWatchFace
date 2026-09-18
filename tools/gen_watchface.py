@@ -119,6 +119,21 @@ LABEL_W, LABEL_H = 36, 36
 ROW_LEFT_EDGE_X = RIGHT_EDGE_X + QUAD // 2 - HOUR_TOTAL_W      # = 101
 LABEL_X = ROW_LEFT_EDGE_X - LABEL_GAP - LABEL_W // 2
 
+# "Cheat mode" decimal readout (2026-09-18, Paul's idea): the raw H/M/S
+# decimal value printed on the RIGHT of each row, mirroring the H/M/S
+# letter label on the left -- lets you check a base-5 reading against the
+# actual time at a glance. Reuses the same "labels" toggle rather than
+# adding a second one, per Paul ("maybe it could be toggled with the same
+# toggle"). Positioned off the row's right edge the same way LABEL_X sits
+# off its left edge; verified to stay inside the circular clip at all
+# three row heights (S, the tightest row, has ~19px of margin to spare).
+ROW_RIGHT_EDGE_X = RIGHT_EDGE_X + QUAD // 2                     # = 349
+DECIMAL_GAP = 10
+DECIMAL_W, DECIMAL_H = 44, 36          # narrower than a first guess (56) --
+                                        # the S row's corner is the tightest
+                                        # fit against the circular clip
+DECIMAL_X = ROW_RIGHT_EDGE_X + DECIMAL_GAP + DECIMAL_W // 2
+
 # ---- color themes -----------------------------------------------------
 # Position order is fixed: TR, TL, BL, BR -- matches the Cartesian-quadrant
 # lighting order (digit 1 lights TR only, digit 4 lights all four). Palette
@@ -219,6 +234,8 @@ def _layout_check_boxes(layout):
         yield (c["x"], c["y"], c["w"] / 2, c["h"] / 2, f'{c["shape"]}@({c["x"]},{c["y"]})')
         if c["label"]:
             yield (c["label_x"], c["label_y"], LABEL_W / 2, LABEL_H / 2, f'label {c["label"]}')
+    for expr, cy in DECIMAL_ROWS:
+        yield (DECIMAL_X, cy, DECIMAL_W / 2, DECIMAL_H / 2, f'decimal readout @{cy}')
 
 
 # ======================================================================
@@ -362,6 +379,31 @@ def wff_labels(layout, palette):
             f'          <Text align="CENTER">\n'
             f'            <Font family="SYNC_TO_DEVICE" size="26" '
             f'weight="NORMAL" color="{palette["label"]}">{c["label"].upper()}</Font>\n'
+            f'          </Text>\n'
+            f'        </PartText>')
+    return "\n".join(out)
+
+
+DECIMAL_ROWS = [
+    ("[HOUR_0_23]", ROW_Y[0]),
+    ("[MINUTE]", ROW_Y[1]),
+    ("[SECOND]", ROW_Y[2]),
+]
+
+
+def wff_decimal_readout(palette):
+    """Cheat-mode decimal H/M/S values on the right of each row -- see
+    DECIMAL_X comment. Gated by the same "labels" toggle as wff_labels()."""
+    out = []
+    for expr, cy in DECIMAL_ROWS:
+        x, y = round(DECIMAL_X - DECIMAL_W / 2), round(cy - DECIMAL_H / 2)
+        out.append(
+            f'        <PartText x="{x}" y="{y}" width="{DECIMAL_W}" height="{DECIMAL_H}">\n'
+            f'          <Text align="CENTER">\n'
+            f'            <Font family="SYNC_TO_DEVICE" size="26" '
+            f'weight="NORMAL" color="{palette["label"]}">\n'
+            f'              <Template>%02d<Parameter expression="{expr}"/></Template>\n'
+            f'            </Font>\n'
             f'          </Text>\n'
             f'        </PartText>')
     return "\n".join(out)
@@ -608,6 +650,7 @@ def theme_group(name: str, palette: dict, layout, labels: bool) -> str:
         <BooleanOption id="TRUE">
           <Group name="{name}_labels" x="0" y="0" width="{CANVAS}" height="{CANVAS}">
 {wff_labels(layout, palette)}
+{wff_decimal_readout(palette)}
           </Group>
         </BooleanOption>
       </BooleanConfiguration>"""
@@ -631,13 +674,6 @@ def build_wff() -> str:
   </UserConfigurations>
 
   <Scene>
-    <!-- complications: independent of theme, and must be a direct child of
-         Scene (can't nest inside the theme Group/BooleanConfiguration
-         below), so each picks its own tint via an inner theme check. -->
-{wff_complication_date()}
-{wff_complication_heart(WIDGET_MARGIN_X)}
-{wff_complication_weather(CANVAS - WIDGET_MARGIN_X - WIDGET_W)}
-
     <!-- theme (dark/light) is a UserConfiguration selection, not a per-frame
          value, so it's a BooleanConfiguration/BooleanOption structural
          switch, same reasoning as BinaryWatchFace's BCD/binary toggle. -->
@@ -649,6 +685,20 @@ def build_wff() -> str:
 {theme_group("theme_light", THEMES["light"], layout, labels=True)}
       </BooleanOption>
     </BooleanConfiguration>
+
+    <!-- complications: must be a direct child of Scene (can't nest inside
+         the theme Group/BooleanConfiguration above), so each picks its own
+         tint via a fixed color rather than a theme-conditional one. Drawn
+         AFTER the theme block deliberately: Scene children paint in
+         document order, and the theme block's full-canvas background
+         rectangle was previously painting over these when they came first,
+         so data computed correctly (confirmed via headless-render logcat)
+         but was never visible on screen. Real bug, found 2026-09-18 via an
+         isolation test (minimal face with bg-then-complication order
+         worked; this face with complication-then-bg order did not). -->
+{wff_complication_date()}
+{wff_complication_heart(WIDGET_MARGIN_X)}
+{wff_complication_weather(CANVAS - WIDGET_MARGIN_X - WIDGET_W)}
   </Scene>
 </WatchFace>
 """
